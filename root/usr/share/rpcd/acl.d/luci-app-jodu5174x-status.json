@@ -1,0 +1,18 @@
+{
+	"luci-app-jodu5174x-status": {
+		"description": "Grant access to JODU5174x status/reboot scripts and settings",
+		"read": {
+			"file": {
+				"/usr/libexec/jodu5174x-data.sh": [ "exec" ]
+			},
+			"uci": [ "jodu5174x" ]
+		},
+		"write": {
+			"file": {
+				"/usr/libexec/jodu5174x-data.sh": [ "exec" ],
+				"/usr/libexec/jodu5174x-reboot.sh": [ "exec" ]
+			},
+			"uci": [ "jodu5174x" ]
+		}
+	}
+}
