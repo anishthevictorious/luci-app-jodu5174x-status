@@ -1,0 +1,10 @@
+{
+	"admin/status/jodu5174x": {
+		"title": "JODU Dashboard",
+		"order": 60,
+		"action": {
+			"type": "view",
+			"path": "jodu5174x/status"
+		}
+	}
+}

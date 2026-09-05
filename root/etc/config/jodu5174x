@@ -1,0 +1,5 @@
+config jodu5174x 'main'
+	option host '192.168.225.1'
+	option username ''
+	option password ''
+	option enabled '1'
