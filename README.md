@@ -32,6 +32,12 @@ cd /tmp && uclient-fetch -O luci-app-jodu5174x-status-1.0-r1.apk https://github.
 
 After install find the dashboard at **Status → JODU Dashboard**.
 
+> [!IMPORTANT]
+> On first use, open the dashboard's **Settings** panel and configure your ODU's IP address, username and password (defaults are `192.168.225.1` / `Admin`). The dashboard won't show live data until these are set correctly.
+>
+
+
+
 ![Dashboard](https://raw.githubusercontent.com/anishthevictorious/luci-app-jodu5174x-status/main/dashboard.png)
 
 ## Configuration
