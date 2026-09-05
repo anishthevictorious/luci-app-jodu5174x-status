@@ -40,6 +40,7 @@ After install find the dashboard at **Status → JODU Dashboard**.
 
 ![Dashboard](https://raw.githubusercontent.com/anishthevictorious/luci-app-jodu5174x-status/main/dashboard.png)
 
+![Settings](https://raw.githubusercontent.com/anishthevictorious/luci-app-jodu5174x-status/main/settings.png)
 ## Configuration
 
 All settings are editable from the dashboard's settings panel and are stored in `/etc/config/jodu5174x`:
