@@ -26,7 +26,7 @@ This application entirely eliminates the need to log into the ODU's web portal s
 Grab the package from [Releases](../../releases) and install it on your router:
 
 ```sh
-cd /tmp && apk add --allow-untrusted ./luci-app-jodu5174x-status-1.0-r1.apk
+cd /tmp && uclient-fetch -O luci-app-jodu5174x-status-1.0-r1.apk https://github.com/anishthevictorious/luci-app-jodu5174x-status/releases/download/1.0-r1/luci-app-jodu5174x-status-1.0-r1.apk && apk add --allow-untrusted ./luci-app-jodu5174x-status-*.apk
 ```
 
 
