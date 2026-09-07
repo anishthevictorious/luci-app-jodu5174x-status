@@ -4,7 +4,7 @@
 
 ### Made with Claude as a Personal Fun Project.
 
-![version](https://img.shields.io/badge/version-1.0-blue) ![OpenWrt](https://img.shields.io/badge/OpenWrt-Compatible-brightgreen) ![ImmortalWrt](https://img.shields.io/badge/ImmortalWrt-Compatible-brightgreen)
+![version](https://img.shields.io/badge/version-3.0-blue) ![OpenWrt](https://img.shields.io/badge/OpenWrt-Compatible-brightgreen) ![ImmortalWrt](https://img.shields.io/badge/ImmortalWrt-Compatible-brightgreen)
 
 A sleek, lightweight LuCI web interface module for OpenWrt that seamlessly monitors the **JODU51741 / JODU51740** 5G ODU directly from your router — no telnet, no SSH, just the ODU's own WebUI/CGI.
 
@@ -26,7 +26,7 @@ This application entirely eliminates the need to log into the ODU's web portal s
 Grab the package from [Releases](../../releases) and install it on your router:
 
 ```sh
-cd /tmp && uclient-fetch -O luci-app-jodu5174x-status-1.0-r1.apk https://github.com/anishthevictorious/luci-app-jodu5174x-status/releases/download/1.0-r1/luci-app-jodu5174x-status-1.0-r1.apk && apk add --allow-untrusted ./luci-app-jodu5174x-status-*.apk
+cd /tmp && uclient-fetch -O luci-app-jodu5174x-status-3.0-r1.apk https://github.com/anishthevictorious/luci-app-jodu5174x-status/releases/download/3.0-r1/luci-app-jodu5174x-status-3.0-r1.apk && apk add --allow-untrusted ./luci-app-jodu5174x-status-*.apk
 ```
 
 
