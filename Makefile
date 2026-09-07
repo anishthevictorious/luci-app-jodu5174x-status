@@ -5,7 +5,7 @@ LUCI_DEPENDS:=+curl
 LUCI_PKGARCH:=all
 
 PKG_NAME:=luci-app-jodu5174x-status
-PKG_VERSION:=2.0
+PKG_VERSION:=3.0
 PKG_RELEASE:=1
 
 define Package/luci-app-jodu5174x-status/postinst

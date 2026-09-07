@@ -378,18 +378,18 @@ return view.extend({
 					btnSave.innerText = 'Applying...';
 					btnSave.disabled = true;
 
-					ui.hideModal();
+					uci.set('jodu5174x', 'main', 'host', newHost);
+					uci.set('jodu5174x', 'main', 'username', newUser);
+					uci.set('jodu5174x', 'main', 'password', newPass);
 
-					var cmds = [
-						'uci set jodu5174x.main.host="' + newHost + '"',
-						'uci set jodu5174x.main.username="' + newUser + '"',
-						'uci set jodu5174x.main.password="' + newPass + '"',
-						'uci commit jodu5174x'
-					].join('; ');
-
-					fs.exec_direct('/bin/sh', ['-c', cmds]).then(function () {
+					uci.save().then(function () {
+						ui.hideModal();
 						window.location.reload();
-					}).catch(function (e) {});
+					}).catch(function (e) {
+						btnSave.innerText = 'Save & Apply';
+						btnSave.disabled = false;
+						ui.addNotification(null, E('p', 'Save failed: ' + e), 'error');
+					});
 				};
 				btnWrap.appendChild(btnSave);
 
