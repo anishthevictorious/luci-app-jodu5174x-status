@@ -18,6 +18,7 @@ This application entirely eliminates the need to log into the ODU's web portal s
 - **Signal & Connection Status:** RSRP, RSRQ, SINR, BLER, Band, Bandwidth, ARFCN, Physical Cell ID, Modulation and MIMO for both the primary and secondary (CA/SCC) carrier.
 - **Live Data Usage:** Tracks TX/RX bytes and overall connection state (link active / down / provisioning / roaming).
 - **Ethernet Link Awareness:** Detects the actual router interface facing the ODU and reports link speed/duplex — useful for telling "ODU rebooting" apart from "ODU disconnected".
+- **Enable/Disable Toggle:** Turn background monitoring on or off directly from the dashboard, with a clear "DISABLED" state when off.
 - **One-Click Reboot:** Reboot the ODU straight from the dashboard.
 - **Simple Settings Panel:** Host, username and password for the ODU WebUI, editable from the dashboard and stored in `/etc/config/jodu5174x`.
 
