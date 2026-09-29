@@ -4,6 +4,7 @@
 # Outputs one merged JSON object to stdout: {"netstatus":{...},"datastatus":{...},"error":null}
 
 CFG="jodu5174x"
+ENABLED="$(uci -q get ${CFG}.main.enabled)"; ENABLED="${ENABLED:-1}"
 HOST="$(uci -q get ${CFG}.main.host)"; HOST="${HOST:-192.168.225.1}"
 USR="$(uci -q get ${CFG}.main.username)"; USR="${USR:-Anish}"
 PWD_="$(uci -q get ${CFG}.main.password)"
@@ -71,7 +72,7 @@ eth_link_status() {
 }
 
 get_fresh_token() {
-	$CURL -H 'Content-Type: application/json' -d '{}' \
+	$CURL -c "$COOKIE" -H 'Content-Type: application/json' -d '{}' \
 		"${BASE}/cgi-bin/cgi/token_query.cgi" | extract_token
 }
 
@@ -81,7 +82,7 @@ do_login() {
 	TOK="$(get_fresh_token)"
 	[ -z "$TOK" ] && return 1
 
-	RESP="$($CURL -c "$COOKIE" -H 'Content-Type: application/json' \
+	RESP="$($CURL -b "$COOKIE" -c "$COOKIE" -H 'Content-Type: application/json' \
 		-d "{\"RequestVerifyToken\":\"${TOK}\",\"usr\":\"${USR}\",\"pwd\":\"${PWD_}\"}" \
 		"${BASE}/cgi-bin/cgi/login_req.cgi")"
 
@@ -112,6 +113,8 @@ call_api() {
 
 	echo "$RESP"
 }
+
+[ "$ENABLED" = "1" ] || fail_json "disabled"
 
 command -v curl >/dev/null 2>&1 || fail_json "curl not found"
 [ -z "$PWD_" ] && fail_json "password not configured"

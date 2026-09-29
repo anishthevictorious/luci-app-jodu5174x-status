@@ -4,6 +4,13 @@
 'require ui';
 'require uci';
 'require poll';
+'require rpc';
+
+var callUciCommit = rpc.declare({
+	object: 'uci',
+	method: 'commit',
+	params: [ 'config' ]
+});
 
 return view.extend({
 	handleSaveApply: null,
@@ -90,6 +97,28 @@ return view.extend({
 			.btn-blue:hover {
 				background-color: #0369a1 !important;
 				box-shadow: 0 0 12px rgba(2, 132, 199, 0.6) !important;
+			}
+
+			.btn-green {
+				background-color: #16a34a !important;
+				border: 1px solid #15803d !important;
+				box-shadow: 0 0 8px rgba(22, 163, 74, 0.4) !important;
+				color: #ffffff !important;
+			}
+			.btn-green:hover {
+				background-color: #15803d !important;
+				box-shadow: 0 0 12px rgba(22, 163, 74, 0.6) !important;
+			}
+
+			.btn-grey {
+				background-color: #4b5563 !important;
+				border: 1px solid #374151 !important;
+				box-shadow: 0 0 8px rgba(75, 85, 99, 0.4) !important;
+				color: #ffffff !important;
+			}
+			.btn-grey:hover {
+				background-color: #374151 !important;
+				box-shadow: 0 0 12px rgba(75, 85, 99, 0.6) !important;
 			}
 
 			.sa-grid-top { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin-bottom: 20px; }
@@ -185,6 +214,10 @@ return view.extend({
 				</div>
 
 				<div class="sa-header-actions">
+					<button class="btn action-btn btn-green" id="odu-toggle-btn">
+						<svg style="width:14px;height:14px;" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+						<span id="ui-toggle-label" style="color:#ffffff !important;">On</span>
+					</button>
 					<button class="btn action-btn btn-red" id="odu-reboot-btn">
 						<svg style="width:14px;height:14px;" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
 						<span style="color:#ffffff !important;">Reboot</span>
@@ -383,6 +416,8 @@ return view.extend({
 					uci.set('jodu5174x', 'main', 'password', newPass);
 
 					uci.save().then(function () {
+						return callUciCommit('jodu5174x');
+					}).then(function () {
 						ui.hideModal();
 						window.location.reload();
 					}).catch(function (e) {
@@ -397,6 +432,37 @@ return view.extend({
 				ui.showModal('Settings (JODU5174x)', [body]);
 			});
 		}
+
+		var toggleBtn = container.querySelector('#odu-toggle-btn');
+		var toggleLabel = container.querySelector('#ui-toggle-label');
+
+		function paintToggle(isOn) {
+			toggleBtn.classList.remove('btn-green', 'btn-grey');
+			toggleBtn.classList.add(isOn ? 'btn-green' : 'btn-grey');
+			toggleLabel.innerText = isOn ? 'On' : 'Off';
+		}
+
+		uci.load('jodu5174x').then(function () {
+			var en = uci.get('jodu5174x', 'main', 'enabled');
+			paintToggle(en !== '0');
+		});
+
+		toggleBtn.addEventListener('click', function () {
+			toggleBtn.disabled = true;
+			uci.load('jodu5174x').then(function () {
+				var cur = uci.get('jodu5174x', 'main', 'enabled');
+				var next = (cur === '0') ? '1' : '0';
+				uci.set('jodu5174x', 'main', 'enabled', next);
+				return uci.save().then(function () {
+					return callUciCommit('jodu5174x');
+				}).then(function () {
+					window.location.reload();
+				});
+			}).catch(function (e) {
+				toggleBtn.disabled = false;
+				ui.addNotification(null, E('p', 'Toggle failed: ' + e), 'error');
+			});
+		});
 
 		var btnSettings = container.querySelector('#odu-settings-btn');
 		btnSettings.addEventListener('click', function () {
@@ -448,6 +514,18 @@ return view.extend({
 					var iconEl = document.getElementById('icon-conn');
 
 					if (payload.error || !payload.netstatus) {
+						if (payload.error === 'disabled') {
+							if (stateEl) {
+								stateEl.className = '';
+								stateEl.innerText = 'DISABLED';
+								stateEl.style.color = '#94a3b8';
+								stateEl.style.textShadow = 'none';
+							}
+							if (iconEl) {
+								iconEl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="36" height="36"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>';
+							}
+							return;
+						}
 						if (rebootInProgress) {
 							if (stateEl) {
 								stateEl.className = '';

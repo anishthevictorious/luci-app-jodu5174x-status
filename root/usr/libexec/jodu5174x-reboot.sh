@@ -33,7 +33,7 @@ fail_json() {
 }
 
 get_fresh_token() {
-	$CURL -H 'Content-Type: application/json' -d '{}' \
+	$CURL -c "$COOKIE" -H 'Content-Type: application/json' -d '{}' \
 		"${BASE}/cgi-bin/cgi/token_query.cgi" | extract_token
 }
 
@@ -43,7 +43,7 @@ do_login() {
 	TOK="$(get_fresh_token)"
 	[ -z "$TOK" ] && return 1
 
-	RESP="$($CURL -c "$COOKIE" -H 'Content-Type: application/json' \
+	RESP="$($CURL -b "$COOKIE" -c "$COOKIE" -H 'Content-Type: application/json' \
 		-d "{\"RequestVerifyToken\":\"${TOK}\",\"usr\":\"${USR}\",\"pwd\":\"${PWD_}\"}" \
 		"${BASE}/cgi-bin/cgi/login_req.cgi")"
 
