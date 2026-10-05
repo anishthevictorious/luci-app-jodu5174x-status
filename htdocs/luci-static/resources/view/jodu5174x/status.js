@@ -4,13 +4,6 @@
 'require ui';
 'require uci';
 'require poll';
-'require rpc';
-
-var callUciCommit = rpc.declare({
-	object: 'uci',
-	method: 'commit',
-	params: [ 'config' ]
-});
 
 return view.extend({
 	handleSaveApply: null,
@@ -411,13 +404,14 @@ return view.extend({
 					btnSave.innerText = 'Applying...';
 					btnSave.disabled = true;
 
-					uci.set('jodu5174x', 'main', 'host', newHost);
-					uci.set('jodu5174x', 'main', 'username', newUser);
-					uci.set('jodu5174x', 'main', 'password', newPass);
-
-					uci.save().then(function () {
-						return callUciCommit('jodu5174x');
-					}).then(function () {
+					fs.exec_direct('/usr/libexec/jodu5174x-save.sh', [
+						'host', newHost, 'username', newUser, 'password', newPass
+					]).then(function (res) {
+						var r;
+						try { r = JSON.parse(res.trim()); } catch (e) { r = { result: false, error: 'parse error' }; }
+						if (!r || !r.result) {
+							throw new Error((r && r.error) || 'unknown error');
+						}
 						ui.hideModal();
 						window.location.reload();
 					}).catch(function (e) {
@@ -452,12 +446,14 @@ return view.extend({
 			uci.load('jodu5174x').then(function () {
 				var cur = uci.get('jodu5174x', 'main', 'enabled');
 				var next = (cur === '0') ? '1' : '0';
-				uci.set('jodu5174x', 'main', 'enabled', next);
-				return uci.save().then(function () {
-					return callUciCommit('jodu5174x');
-				}).then(function () {
-					window.location.reload();
-				});
+				return fs.exec_direct('/usr/libexec/jodu5174x-save.sh', ['enabled', next]);
+			}).then(function (res) {
+				var r;
+				try { r = JSON.parse(res.trim()); } catch (e) { r = { result: false, error: 'parse error' }; }
+				if (!r || !r.result) {
+					throw new Error((r && r.error) || 'unknown error');
+				}
+				window.location.reload();
 			}).catch(function (e) {
 				toggleBtn.disabled = false;
 				ui.addNotification(null, E('p', 'Toggle failed: ' + e), 'error');
